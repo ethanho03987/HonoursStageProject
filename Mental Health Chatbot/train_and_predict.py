@@ -54,4 +54,4 @@ joblib.dump(scaler, scaler_output_path)
 
 print("Model training complete.")
 print("Saved 'mental_health_multi_model.pkl' and 'tfidf_multi_vectorizer.pkl'")
-print(f"📦 Saved model to '{model_output_path}' and scaler to '{scaler_output_path}'")
+print(f"Saved model to '{model_output_path}' and scaler to '{scaler_output_path}'")

@@ -1,305 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat Bot</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --text-primary: #2d3748;
-            --text-secondary: #4a5568;
-            --border-color: #e2e8f0;
-            --accent-color: #4f46e5;
-            --message-user: #4f46e5;
-            --message-assistant: #f3f4f6;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #1a1b1e;
-            --bg-secondary: #2d2d2d;
-            --text-primary: #e2e8f0;
-            --text-secondary: #a0aec0;
-            --border-color: #4a5568;
-            --accent-color: #6366f1;
-            --message-user: #6366f1;
-            --message-assistant: #2d2d2d;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            z-index: 1000;
-        }
-
-        .theme-toggle:hover {
-            background: var(--border-color);
-        }
-
-        .chat-container {
-            max-width: 900px;
-            margin: 20px auto;
-            background-color: var(--bg-primary);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px var(--shadow-color);
-            padding: 20px;
-            height: calc(100vh - 40px);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .chat-box {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            background-color: var(--bg-secondary);
-        }
-
-        .message {
-            margin-bottom: 16px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            max-width: 80%;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user-message {
-            background-color: var(--message-user);
-            color: white;
-            margin-left: auto;
-            box-shadow: 0 2px 4px var(--shadow-color);
-        }
-
-        .assistant-message {
-            background-color: var(--message-assistant);
-            color: var(--text-primary);
-            margin-right: auto;
-            box-shadow: 0 2px 4px var(--shadow-color);
-        }
-
-        .input-container {
-            display: flex;
-            gap: 12px;
-            padding: 20px;
-            background-color: var(--bg-secondary);
-            border-radius: 12px;
-        }
-
-        #user-input {
-            flex-grow: 1;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            outline: none;
-        }
-
-        #user-input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-        }
-
-        button {
-            padding: 12px 24px;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mental Health Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --accent-color: #4f46e5;
+      --message-user: #4f46e5;
+      --message-assistant: #f3f4f6;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1a1b1e;
+      --bg-secondary: #2d2d2d;
+      --text-primary: #e2e8f0;
+      --text-secondary: #a0aec0;
+      --border-color: #4a5568;
+      --accent-color: #6366f1;
+      --message-user: #6366f1;
+      --message-assistant: #2d2d2d;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      z-index: 1000;
+    }
+    .theme-toggle:hover { background: var(--border-color); }
+    .chat-container {
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: var(--bg-primary);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px var(--shadow-color);
+      padding: 20px;
+      height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+    .chat-box {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      background-color: var(--bg-secondary);
+    }
+    .message {
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 80%;
+      animation: fadeIn 0.3s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .user-message { background-color: var(--message-user); color: white; margin-left: auto; }
+    .assistant-message { background-color: var(--message-assistant); color: var(--text-primary); margin-right: auto; }
+    .input-container {
+      display: flex;
+      gap: 12px;
+      padding: 20px;
+      background-color: var(--bg-secondary);
+      border-radius: 12px;
+    }
+    #user-input {
+      flex-grow: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+    }
+    button {
+      padding: 12px 24px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover { opacity: 0.9; }
+    button:active { transform: scale(0.98); }
+  </style>
 </head>
+
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <span class="theme-icon">🌙</span>
-        <span class="theme-text">Dark Mode</span>
-    </button>
-    
-    <div class="chat-container">
-        <div class="header">
-            <h1>AI Chat Bot</h1>
-        </div>
-        <div class="chat-box" id="chat-box"></div>
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
-            <button onclick="sendMessage()">Send</button>
-        </div>
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span class="theme-icon">🌙</span>
+    <span class="theme-text">Dark Mode</span>
+  </button>
+
+  <div class="chat-container">
+    <div class="header">
+      <h1>Mental Health Chatbot</h1>
     </div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="input-container">
+      <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
-    <script>
-        // Theme toggle functionality
-        function toggleTheme() {
-            const body = document.body;
-            const themeToggle = document.querySelector('.theme-toggle');
-            const themeIcon = document.querySelector('.theme-icon');
-            const themeText = document.querySelector('.theme-text');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark Mode';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light Mode';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const themeToggle = document.querySelector('.theme-toggle');
+      const themeIcon = document.querySelector('.theme-icon');
+      const themeText = document.querySelector('.theme-text');
+      if (body.getAttribute('data-theme') === 'dark') {
+        body.removeAttribute('data-theme');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
 
-        // Load saved theme preference
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.setAttribute('data-theme', 'dark');
-                document.querySelector('.theme-icon').textContent = '☀️';
-                document.querySelector('.theme-text').textContent = 'Light Mode';
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        document.querySelector('.theme-icon').textContent = '☀️';
+        document.querySelector('.theme-text').textContent = 'Light Mode';
+      }
+      loadChatHistory();
+
+      const history = JSON.parse(localStorage.getItem('chat-history')) || [];
+      if (history.length === 0) {
+        sendWelcomeMessage();
+      }
+    });
+
+    function addMessage(content, isUser, isLoading = false, skipSave = false) {
+      const chatBox = document.getElementById('chat-box');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
+
+      if (isLoading) {
+        messageDiv.innerHTML = `<span class="loading">⏳ Typing...</span>`;
+        messageDiv.setAttribute('id', 'loading-message');
+      } else {
+        messageDiv.textContent = content;
+      }
+
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      if (!skipSave) {
+        saveMessage(content, isUser);
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+
+      if (message === '') return;
+
+      addMessage(message, true);
+      input.value = '';
+      input.disabled = true;
+
+      addMessage('...', false, true); // Loading spinner
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: message })
         });
 
-        document.getElementById('user-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+        const data = await response.json();
+
+        document.getElementById('loading-message')?.remove();
+
+        if (data.error) {
+          addMessage('Error: ' + data.error, false);
+        } else {
+          addMessage(data.response, false);
+        }
+      } catch (error) {
+        document.getElementById('loading-message')?.remove();
+        addMessage('Error: Could not connect to the server.', false);
+      }
+
+      input.disabled = false;
+      input.focus();
+    }
+
+    function saveMessage(content, isUser) {
+      let history = JSON.parse(localStorage.getItem('chat-history')) || [];
+      history.push({ content: content, isUser: isUser });
+      localStorage.setItem('chat-history', JSON.stringify(history));
+    }
+
+    function loadChatHistory() {
+      const history = JSON.parse(localStorage.getItem('chat-history')) || [];
+      history.forEach(msg => {
+        addMessage(msg.content, msg.isUser);
+      });
+    }
+
+    async function sendWelcomeMessage() {
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: "__WELCOME__" })
         });
 
-        function addMessage(content, isUser) {
-            const chatBox = document.getElementById('chat-box');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
-            messageDiv.textContent = content;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+        const data = await response.json();
+        if (data.response) {
+          typeMessageSlowly(data.response, false, true);
         }
+      } catch (error) {
+        console.error('Error sending welcome message:', error);
+      }
+    }
 
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
-            const message = input.value.trim();
-            
-            if (message === '') return;
-            
-            addMessage(message, true);
-            input.value = '';
-            input.disabled = true;
+    function typeMessageSlowly(message, isUser = false, skipSave = false) {
+      const chatBox = document.getElementById('chat-box');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
+      chatBox.appendChild(messageDiv);
 
-            try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message: message })
-                });
+      let index = 0;
+      const speed = 30; // ms per character
 
-                const data = await response.json();
-                
-                if (data.error) {
-                    addMessage('Error: ' + data.error, false);
-                } else {
-                    addMessage(data.response, false);
-                }
-            } catch (error) {
-                addMessage('Error: Could not connect to the server', false);
-            }
-
-            input.disabled = false;
-            input.focus();
+      function typeCharacter() {
+        if (index < message.length) {
+          messageDiv.textContent += message.charAt(index);
+          index++;
+          chatBox.scrollTop = chatBox.scrollHeight;
+          setTimeout(typeCharacter, speed);
+        } else {
+          if (!skipSave) {
+            saveMessage(message, isUser);
+          }
         }
+      }
 
-        // Load chat history when page loads
-        async function loadHistory() {
-            try {
-                const response = await fetch('/history');
-                const history = await response.json();
-                
-                history.reverse().forEach(msg => {
-                    addMessage(msg.content, msg.role === 'user');
-                });
-            } catch (error) {
-                console.error('Error loading chat history:', error);
-            }
-        }
-
-        loadHistory();
-    </script>
+      typeCharacter();
+    }
+  </script>
 </body>
 </html>
