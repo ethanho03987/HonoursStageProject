@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #ffffff;
+      --bg-primary:rgb(255, 255, 255);
       --bg-secondary: #f8f9fa;
       --text-primary: #2d3748;
       --text-secondary: #4a5568;
@@ -74,6 +74,24 @@
       border-bottom: 1px solid var(--border-color);
       margin-bottom: 20px;
     }
+    .new-chat-wrapper {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    .new-chat-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: var(--accent-color);
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .new-chat-btn:hover {
+      opacity: 0.9;
+    }
     .chat-box {
       flex-grow: 1;
       overflow-y: auto;
@@ -135,6 +153,9 @@
   <div class="chat-container">
     <div class="header">
       <h1>Mental Health Chatbot</h1>
+    </div>
+    <div class="new-chat-wrapper">
+      <button class="new-chat-btn" onclick="startNewChat()">New Chat</button>
     </div>
     <div class="chat-box" id="chat-box"></div>
     <div class="input-container">
@@ -207,7 +228,7 @@
       input.value = '';
       input.disabled = true;
 
-      addMessage('...', false, true); // Loading spinner
+      addMessage('...', false, true); //Loading spinner
 
       try {
         const response = await fetch('/chat', {
@@ -271,7 +292,7 @@
       chatBox.appendChild(messageDiv);
 
       let index = 0;
-      const speed = 30; // ms per character
+      const speed = 30; //ms per character
 
       function typeCharacter() {
         if (index < message.length) {
@@ -319,7 +340,7 @@
         } else {
           const responseText = data.response;
 
-          // Check if assistant warned about off-topic
+          //Check if assistant warned about off-topic
           if (responseText.includes("I'm here to help with mental health support")) {
             offTopicCounter++;
 
@@ -331,7 +352,7 @@
               addMessage(responseText, false);
             }
           } else {
-            offTopicCounter = 0; // reset if valid message
+            offTopicCounter = 0; //reset if valid message
             addMessage(responseText, false);
           }
         }
@@ -347,6 +368,17 @@
     function clearChatHistory() {
       localStorage.removeItem('chat-history');
       document.getElementById('chat-box').innerHTML = '';
+    }
+
+    function startNewChat() {
+      //Clear chat display
+      document.getElementById('chat-box').innerHTML = '';
+      //Remove chat history
+      localStorage.removeItem('chat-history');
+      //Reset off-topic counter if you're using one
+      offTopicCounter = 0;
+      //Send welcome message again
+      sendWelcomeMessage();
     }
   </script>
 </body>
