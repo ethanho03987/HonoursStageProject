@@ -272,6 +272,10 @@
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const timestamp = `${hours}:${minutes}`;
 
+        const formattedContent = content
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\n/g, '<br>');
+
         if (isLoading) {
             messageDiv.innerHTML = `
                 <span class="text-content">
@@ -282,7 +286,7 @@
             messageDiv.setAttribute('id', 'loading-message');
         } else {
             messageDiv.innerHTML = `
-                <span class="text-content">${content}</span>
+                <span class="text-content">${formattedContent}</span>
                 <span class="timestamp">${timestamp}</span>
             `;
         }
@@ -331,7 +335,7 @@
         input.value = '';
         input.disabled = true;
 
-        addMessage('...', false, true);  // Show typing indicator
+        addMessage('...', false, true);
 
         try {
             const response = await fetch('/chat', {
@@ -349,7 +353,6 @@
             } else {
                 const responseText = data.response;
 
-                // Off-topic check
                 if (responseText.includes("I'm here to help with mental health support")) {
                     offTopicCounter++;
                     if (offTopicCounter >= 3) {
@@ -406,15 +409,21 @@
 
         let index = 0;
         const speed = 30;
+        const fullMessage = message;
         const textContent = messageDiv.querySelector('.text-content');
 
         function typeCharacter() {
-            if (index < message.length) {
-                textContent.textContent += message.charAt(index);
+            if (index < fullMessage.length) {
+                textContent.textContent += fullMessage.charAt(index);
                 index++;
                 chatBox.scrollTop = chatBox.scrollHeight;
                 setTimeout(typeCharacter, speed);
             } else {
+              const formatted = fullMessage
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+              textContent.innerHTML = formatted;
+
                 if (!skipSave) {
                     saveMessage(message, isUser);
                 }
