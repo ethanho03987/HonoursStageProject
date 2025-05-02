@@ -130,6 +130,13 @@
       color: var(--text-primary);
       outline: none;
     }
+    .timestamp {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-align: right;
+    }
     button {
       padding: 12px 24px;
       background-color: var(--accent-color);
@@ -203,11 +210,17 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
 
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2,'0');
+      const minutes = now.getMinutes().toString().padStart(2,'0');
+      const timestamp = `${hours}:${minutes}`;
+
+
       if (isLoading) {
-        messageDiv.innerHTML = `<span class="loading">⏳ Typing...</span>`;
+        messageDiv.innerHTML = `<span class="loading">⏳ Typing...</span><span class="timestamp">${timestamp}</span>`;
         messageDiv.setAttribute('id', 'loading-message');
       } else {
-        messageDiv.textContent = content;
+        messageDiv.innerHTML = `<span class="text-content">${content}</span><span class="timestamp">${timestamp}</span>`;
       }
 
       chatBox.appendChild(messageDiv);
