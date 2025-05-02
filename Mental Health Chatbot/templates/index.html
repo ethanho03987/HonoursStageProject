@@ -101,11 +101,28 @@
       background-color: var(--bg-secondary);
     }
     .message {
+      position: relative;
       margin-bottom: 16px;
-      padding: 12px 16px;
+      padding: 12px 16px 12px 40px;
       border-radius: 12px;
       max-width: 80%;
       animation: fadeIn 0.3s ease-in;
+    }
+    .message::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 12px;
+      width: 24px;
+      height: 24px;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .user-message::before {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/15567/15567914.png');  /* user icon */
+    }
+    .assistant-message::before {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/9732/9732800.png');  /* bot icon */
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -148,6 +165,40 @@
     }
     button:hover { opacity: 0.9; }
     button:active { transform: scale(0.98); }
+    .typing-indicator {
+      display: inline-block;
+    }
+    
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 2px;
+      background-color: var(--text-secondary);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+    
+    .typing-indicator span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0;
+    }
+    
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      } 
+      40% {
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 
@@ -173,226 +224,199 @@
 
   <script>
     function toggleTheme() {
-      const body = document.body;
-      const themeToggle = document.querySelector('.theme-toggle');
-      const themeIcon = document.querySelector('.theme-icon');
-      const themeText = document.querySelector('.theme-text');
-      if (body.getAttribute('data-theme') === 'dark') {
-        body.removeAttribute('data-theme');
-        themeIcon.textContent = '🌙';
-        themeText.textContent = 'Dark Mode';
-        localStorage.setItem('theme', 'light');
-      } else {
-        body.setAttribute('data-theme', 'dark');
-        themeIcon.textContent = '☀️';
-        themeText.textContent = 'Light Mode';
-        localStorage.setItem('theme', 'dark');
-      }
+        const body = document.body;
+        const themeToggle = document.querySelector('.theme-toggle');
+        const themeIcon = document.querySelector('.theme-icon');
+        const themeText = document.querySelector('.theme-text');
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            themeIcon.textContent = '🌙';
+            themeText.textContent = 'Dark Mode';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light Mode';
+            localStorage.setItem('theme', 'dark');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        document.querySelector('.theme-icon').textContent = '☀️';
-        document.querySelector('.theme-text').textContent = 'Light Mode';
-      }
-      loadChatHistory();
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.querySelector('.theme-icon').textContent = '☀️';
+            document.querySelector('.theme-text').textContent = 'Light Mode';
+        }
+        loadChatHistory();
 
-      const history = JSON.parse(localStorage.getItem('chat-history')) || [];
-      if (history.length === 0) {
-        sendWelcomeMessage();
-      }
+        const history = JSON.parse(localStorage.getItem('chat-history')) || [];
+        if (history.length === 0) {
+            sendWelcomeMessage();
+        }
     });
 
     function addMessage(content, isUser, isLoading = false, skipSave = false) {
-      const chatBox = document.getElementById('chat-box');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
+        const chatBox = document.getElementById('chat-box');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
 
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2,'0');
-      const minutes = now.getMinutes().toString().padStart(2,'0');
-      const timestamp = `${hours}:${minutes}`;
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const timestamp = `${hours}:${minutes}`;
 
-
-      if (isLoading) {
-        messageDiv.innerHTML = `<span class="loading">⏳ Typing...</span><span class="timestamp">${timestamp}</span>`;
-        messageDiv.setAttribute('id', 'loading-message');
-      } else {
-        messageDiv.innerHTML = `<span class="text-content">${content}</span><span class="timestamp">${timestamp}</span>`;
-      }
-
-      chatBox.appendChild(messageDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      if (!skipSave) {
-        saveMessage(content, isUser);
-      }
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('user-input');
-      const message = input.value.trim();
-
-      if (message === '') return;
-
-      addMessage(message, true);
-      input.value = '';
-      input.disabled = true;
-
-      addMessage('...', false, true); //Loading spinner
-
-      try {
-        const response = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: message })
-        });
-
-        const data = await response.json();
-
-        document.getElementById('loading-message')?.remove();
-
-        if (data.error) {
-          addMessage('Error: ' + data.error, false);
+        if (isLoading) {
+            messageDiv.innerHTML = `
+                <span class="text-content">
+                    <div class="typing-indicator"><span></span><span></span><span></span></div>
+                </span>
+                <span class="timestamp">${timestamp}</span>
+            `;
+            messageDiv.setAttribute('id', 'loading-message');
         } else {
-          addMessage(data.response, false);
+            messageDiv.innerHTML = `
+                <span class="text-content">${content}</span>
+                <span class="timestamp">${timestamp}</span>
+            `;
         }
-      } catch (error) {
-        document.getElementById('loading-message')?.remove();
-        addMessage('Error: Could not connect to the server.', false);
-      }
 
-      input.disabled = false;
-      input.focus();
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        if (!skipSave) {
+            saveMessage(content, isUser);
+        }
     }
 
     function saveMessage(content, isUser) {
-      let history = JSON.parse(localStorage.getItem('chat-history')) || [];
-      history.push({ content: content, isUser: isUser });
-      localStorage.setItem('chat-history', JSON.stringify(history));
+        let history = JSON.parse(localStorage.getItem('chat-history')) || [];
+        history.push({ content: content, isUser: isUser });
+        localStorage.setItem('chat-history', JSON.stringify(history));
     }
 
     function loadChatHistory() {
-      const history = JSON.parse(localStorage.getItem('chat-history')) || [];
-      history.forEach(msg => {
-        addMessage(msg.content, msg.isUser);
-      });
-    }
-
-    async function sendWelcomeMessage() {
-      try {
-        const response = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: "__WELCOME__" })
+        const history = JSON.parse(localStorage.getItem('chat-history')) || [];
+        history.forEach(msg => {
+            addMessage(msg.content, msg.isUser);
         });
-
-        const data = await response.json();
-        if (data.response) {
-          typeMessageSlowly(data.response, false, true);
-        }
-      } catch (error) {
-        console.error('Error sending welcome message:', error);
-      }
     }
 
-    function typeMessageSlowly(message, isUser = false, skipSave = false) {
-      const chatBox = document.getElementById('chat-box');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
-      chatBox.appendChild(messageDiv);
+    function clearChatHistory() {
+        localStorage.removeItem('chat-history');
+        document.getElementById('chat-box').innerHTML = '';
+    }
 
-      let index = 0;
-      const speed = 30; //ms per character
-
-      function typeCharacter() {
-        if (index < message.length) {
-          messageDiv.textContent += message.charAt(index);
-          index++;
-          chatBox.scrollTop = chatBox.scrollHeight;
-          setTimeout(typeCharacter, speed);
-        } else {
-          if (!skipSave) {
-            saveMessage(message, isUser);
-          }
-        }
-      }
-
-      typeCharacter();
+    function startNewChat() {
+        clearChatHistory();
+        offTopicCounter = 0;
+        sendWelcomeMessage();
     }
 
     let offTopicCounter = 0;
 
     async function sendMessage() {
-      const input = document.getElementById('user-input');
-      const message = input.value.trim();
+        const input = document.getElementById('user-input');
+        const message = input.value.trim();
 
-      if (message === '') return;
+        if (message === '') return;
 
-      addMessage(message, true);
-      input.value = '';
-      input.disabled = true;
+        addMessage(message, true);
+        input.value = '';
+        input.disabled = true;
 
-      addMessage('...', false, true);
+        addMessage('...', false, true);  // Show typing indicator
 
-      try {
-        const response = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: message })
-        });
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        document.getElementById('loading-message')?.remove();
+            document.getElementById('loading-message')?.remove();
 
-        if (data.error) {
-          addMessage('Error: ' + data.error, false);
-        } else {
-          const responseText = data.response;
-
-          //Check if assistant warned about off-topic
-          if (responseText.includes("I'm here to help with mental health support")) {
-            offTopicCounter++;
-
-            if (offTopicCounter >= 3) {
-              offTopicCounter = 0;
-              clearChatHistory();
-              addMessage("Too many off-topic messages. Let's start fresh! How are you feeling today?", false);
+            if (data.error) {
+                addMessage('Error: ' + data.error, false);
             } else {
-              addMessage(responseText, false);
+                const responseText = data.response;
+
+                // Off-topic check
+                if (responseText.includes("I'm here to help with mental health support")) {
+                    offTopicCounter++;
+                    if (offTopicCounter >= 3) {
+                        offTopicCounter = 0;
+                        clearChatHistory();
+                        addMessage("Too many off-topic messages. Let's start fresh! How are you feeling today?", false);
+                    } else {
+                        addMessage(responseText, false);
+                    }
+                } else {
+                    offTopicCounter = 0;
+                    addMessage(responseText, false);
+                }
             }
-          } else {
-            offTopicCounter = 0; //reset if valid message
-            addMessage(responseText, false);
-          }
+
+        } catch (error) {
+            document.getElementById('loading-message')?.remove();
+            addMessage('Error: Could not connect to the server.', false);
         }
-      } catch (error) {
-        document.getElementById('loading-message')?.remove();
-        addMessage('Error: Could not connect to the server.', false);
-      }
 
-      input.disabled = false;
-      input.focus();
+        input.disabled = false;
+        input.focus();
     }
 
-    function clearChatHistory() {
-      localStorage.removeItem('chat-history');
-      document.getElementById('chat-box').innerHTML = '';
+    async function sendWelcomeMessage() {
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: "__WELCOME__" })
+            });
+
+            const data = await response.json();
+            if (data.response) {
+                typeMessageSlowly(data.response, false, true);
+            }
+        } catch (error) {
+            console.error('Error sending welcome message:', error);
+        }
     }
 
-    function startNewChat() {
-      //Clear chat display
-      document.getElementById('chat-box').innerHTML = '';
-      //Remove chat history
-      localStorage.removeItem('chat-history');
-      //Reset off-topic counter if you're using one
-      offTopicCounter = 0;
-      //Send welcome message again
-      sendWelcomeMessage();
+    function typeMessageSlowly(message, isUser = false, skipSave = false) {
+        const chatBox = document.getElementById('chat-box');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
+
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const timestamp = `${hours}:${minutes}`;
+
+        messageDiv.innerHTML = `<span class="text-content"></span><span class="timestamp">${timestamp}</span>`;
+        chatBox.appendChild(messageDiv);
+
+        let index = 0;
+        const speed = 30;
+        const textContent = messageDiv.querySelector('.text-content');
+
+        function typeCharacter() {
+            if (index < message.length) {
+                textContent.textContent += message.charAt(index);
+                index++;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                setTimeout(typeCharacter, speed);
+            } else {
+                if (!skipSave) {
+                    saveMessage(message, isUser);
+                }
+            }
+        }
+
+        typeCharacter();
     }
-  </script>
+</script>
 </body>
 </html>
