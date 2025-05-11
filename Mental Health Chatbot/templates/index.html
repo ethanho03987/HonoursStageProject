@@ -59,7 +59,7 @@
     .theme-toggle:hover { background: var(--border-color); }
     .chat-container {
       max-width: 900px;
-      margin: 20px auto;
+      margin: 60px auto 20px auto;
       background-color: var(--bg-primary);
       border-radius: 16px;
       box-shadow: 0 4px 6px var(--shadow-color);
@@ -75,9 +75,10 @@
       margin-bottom: 20px;
     }
     .new-chat-wrapper {
-      position: absolute;
+      position: fixed;
       top: 20px;
       left: 20px;
+      z-index: 1000;
     }
     .new-chat-btn {
       padding: 8px 16px;
@@ -118,6 +119,7 @@
       background-size: cover;
       background-repeat: no-repeat;
     }
+
     .user-message::before {
       background-image: url('https://cdn-icons-png.flaticon.com/512/15567/15567914.png');  /* user icon */
     }
@@ -153,6 +155,19 @@
       color: var(--text-primary);
       outline: none;
     }
+    .disclaimer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--bg-secondary);
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1001;
+    }
     .timestamp {
       display: block;
       font-size: 12px;
@@ -174,7 +189,24 @@
     .typing-indicator {
       display: inline-block;
     }
-    
+    .top-controls {
+      position: fixed;
+      top: 48px;
+      left: 0;
+      width: 100%;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 1001;
+    }
+
+    .new-chat-wrapper {
+      position: static;
+    }
+
+    .theme-toggle {
+      position: static;
+    }
     .typing-indicator span {
       display: inline-block;
       width: 8px;
@@ -184,7 +216,6 @@
       border-radius: 50%;
       animation: bounce 1.4s infinite ease-in-out both;
     }
-    
     .typing-indicator span:nth-child(1) {
       animation-delay: -0.32s;
     }
@@ -208,18 +239,21 @@
   </style>
 </head>
 
-<body>
+<div class="disclaimer">
+  ⚠️ This chatbot is not a substitute for professional or medical advice. If you're in crisis, please seek help from a qualified mental health professional or call Samaritans at <strong>116 123</strong>.
+</div>
+<div class="top-controls">
+  <div class="new-chat-wrapper">
+    <button class="new-chat-btn" onclick="startNewChat()">New Chat</button>
+  </div>
   <button class="theme-toggle" onclick="toggleTheme()">
     <span class="theme-icon">🌙</span>
     <span class="theme-text">Dark Mode</span>
   </button>
-
+</div>
   <div class="chat-container">
     <div class="header">
       <h1>Mental Health Chatbot</h1>
-    </div>
-    <div class="new-chat-wrapper">
-      <button class="new-chat-btn" onclick="startNewChat()">New Chat</button>
     </div>
     <div class="chat-box" id="chat-box"></div>
     <div class="input-container">
