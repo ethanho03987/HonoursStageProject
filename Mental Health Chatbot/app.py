@@ -56,13 +56,13 @@ def get_custom_prompt(user_message):
     elif "school" in message or "teacher" in message or "homework" in message:
         return "The user is discussing school stress. Ask what about school is causing stress and guide them with strategies to cope in that environment."
     elif "lonely" in message or "alone" in message:
-        return "The user feels lonely. Ask about their support network or if they’ve been feeling disconnected lately."
+        return "The user feels lonely. Ask about their support network or if they've been feeling disconnected lately."
     elif "relationship" in message or "partner" in message:
-        return "The user is describing relationship problems. Ask what’s been difficult in their relationship lately."
+        return "The user is describing relationship problems. Ask what's been difficult in their relationship lately."
     elif "angry" in message or "lash out" in message:
         return "The user is describing anger or frustration. Ask what has been triggering these feelings and how often they occur."
     elif "sober" in message or "alcohol" in message:
-        return "The user is in recovery and feeling unstable. Ask how they’re coping with sobriety and offer emotional validation."
+        return "The user is in recovery and feeling unstable. Ask how they're coping with sobriety and offer emotional validation."
     
     return ""
 
